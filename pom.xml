@@ -1,0 +1,132 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.grigoriliev.jsampler</groupId>
+	<artifactId>jsampler-fantasia-3rd-party-libs</artifactId>
+	<version>0.9.7-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>${project.groupId}:${project.artifactId}</name>
+
+	<description>
+		Provide some third party libraries that are unavailable as maven dependencies
+		and/or are not available as modular libraries.
+	</description>
+
+	<url>https://github.com/grigoriliev/jsampler-fantasia-3rd-party-libs</url>
+
+	<properties>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<developers>
+		<developer>
+			<name>Grigor Iliev</name>
+			<email>grigor@grigoriliev.com</email>
+			<organizationUrl>https://www.grigoriliev.com</organizationUrl>
+		</developer>
+	</developers>
+
+	<licenses>
+		<license>
+			<name>The 3-Clause BSD License</name>
+			<url>https://opensource.org/license/bsd-3-clause/</url>
+		</license>
+		<license>
+			<name>GNU Lesser General Public License</name>
+			<url>https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html</url>
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:git:git://github.com/grigoriliev/jsampler-fantasia-3rd-party-libs.git</connection>
+		<developerConnection>scm:git:ssh://github.com/grigoriliev/jsampler-fantasia-3rd-party-libs.git</developerConnection>
+		<url>https://github.com/grigoriliev/jsampler-fantasia-3rd-party-libs/tree/master</url>
+	</scm>
+
+	<repositories>
+		<repository>
+			<id>jsampler-fantasia-3rd-party-libs-repo</id>
+			<url>file://${project.basedir}/repo</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<!--
+		 Added to local repository with:
+		 mvn org.apache.maven.plugins:maven-install-plugin:2.3.1:install-file -Dfile=lib/required/swingx.jar -DgroupId=com.grigoriliev.jsampler.fantasia.lib3rdparty -DartifactId=swingx -Dversion=1 -Dpackaging=jar -DlocalRepositoryPath=repo
+		 cd repo/com/grigoriliev/jsampler/fantasia/lib3rdparty/swingx/1
+		 sha1sum swingx-1.jar | awk '{print $1;}' > swingx-1.jar.sha1
+		 sha1sum swingx-1.pom | awk '{print $1;}' > swingx-1.pom.sha1
+		-->
+		<dependency>
+			<groupId>com.grigoriliev.jsampler.fantasia.lib3rdparty</groupId>
+			<artifactId>swingx</artifactId>
+			<version>1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.grigoriliev.jsampler.fantasia.lib3rdparty</groupId>
+			<artifactId>substance</artifactId>
+			<version>1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.grigoriliev.jsampler.fantasia.lib3rdparty</groupId>
+			<artifactId>trident</artifactId>
+			<version>1</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.4.1</version>
+				<configuration>
+					<createDependencyReducedPom>true</createDependencyReducedPom>
+					<useDependencyReducedPomInJar>true</useDependencyReducedPomInJar>
+					<artifactSet>
+						<excludes>
+							<exclude>module-info.java</exclude>
+						</excludes>
+					</artifactSet>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- see https://stackoverflow.com/questions/51751981/ -->
+			<plugin>
+				<groupId>org.moditect</groupId>
+				<artifactId>moditect-maven-plugin</artifactId>
+				<version>1.0.0.RC2</version>
+				<executions>
+					<execution>
+						<id>add-module-infos</id>
+						<phase>package</phase>
+						<goals>
+							<goal>add-module-info</goal>
+						</goals>
+						<configuration>
+							<overwriteExistingFiles>true</overwriteExistingFiles>
+							<module>
+								<moduleInfoFile>
+									src/main/java/module-info.java
+								</moduleInfoFile>
+							</module>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+
