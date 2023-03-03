@@ -1,3 +1,3 @@
 package org.jdesktop.swingx;
 
-class Dummy { }
+public class Dummy { }
